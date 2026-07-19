@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildIcs, type Activity } from "../src/ics";
+import { buildIcs, filterSemester, type Activity } from "../src/ics";
 
 const NOW = new Date("2026-07-19T00:00:00Z");
 
@@ -50,6 +50,14 @@ describe("buildIcs", () => {
     );
     expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(2);
     expect(ics).not.toContain("RRULE");
+  });
+
+  it("filters by semester month window (S1 Jan–Jun, S2 Jul–Dec)", () => {
+    const s1 = act("2026-03-02T10:00:00+08:00", "2026-03-02T12:00:00+08:00");
+    const s2 = act("2026-08-03T10:00:00+08:00", "2026-08-03T12:00:00+08:00");
+    expect(filterSemester([s1, s2], "s1")).toEqual([s1]);
+    expect(filterSemester([s1, s2], "s2")).toEqual([s2]);
+    expect(filterSemester([s1, s2], "all")).toEqual([s1, s2]);
   });
 
   it("is a valid calendar shell with Perth VTIMEZONE and CRLF endings", () => {

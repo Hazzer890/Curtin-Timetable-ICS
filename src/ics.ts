@@ -44,6 +44,18 @@ function locationOf(a: Activity): string {
   return `${l.buildingNumber ?? "?"}.${l.roomNumber ?? "?"} (${l.name ?? ""})`;
 }
 
+export type Semester = "all" | "s1" | "s2";
+
+// ponytail: month-window heuristic (S1 = Jan–Jun, S2 = Jul–Dec); swap for real
+// teaching-period data if Elsie turns out to expose it.
+export function filterSemester(activities: Activity[], sem: Semester): Activity[] {
+  if (sem !== "s1" && sem !== "s2") return activities;
+  return activities.filter((a) => {
+    const m = perthWall(a.startDateTime).getUTCMonth();
+    return sem === "s1" ? m < 6 : m >= 6;
+  });
+}
+
 export function buildIcs(activities: Activity[], now: Date = new Date()): string {
   const groups = new Map<string, Activity[]>();
   for (const a of activities) {

@@ -29,9 +29,11 @@ build step — the page is inline HTML in the Worker.
 
 ## Routes
 
-- `GET /` — inline HTML form: Curtin ID + password, a privacy note
-  ("credentials are sent once to Elsie and never stored or logged"), and a
-  credit link to ElsieScraper.
+- `GET /` — inline HTML form: Curtin ID + password + semester select
+  (All / Semester 1 / Semester 2, filtered by start-month window Jan–Jun vs
+  Jul–Dec), a privacy note ("credentials are sent once to Elsie and never
+  stored or logged"), and a "not affiliated with Curtin University" footer.
+  No reference to the project that inspired it.
 - `POST /generate` — form-encoded body → login → fetch activities → build ICS →
   `200` with `Content-Type: text/calendar` and
   `Content-Disposition: attachment; filename="timetable.ics"`.
