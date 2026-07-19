@@ -50,10 +50,13 @@ export type Semester = "all" | "s1" | "s2";
 // teaching-period data if Elsie turns out to expose it.
 export function filterSemester(activities: Activity[], sem: Semester): Activity[] {
   if (sem !== "s1" && sem !== "s2") return activities;
-  return activities.filter((a) => {
+  const matches = activities.filter((a) => {
     const m = perthWall(a.startDateTime).getUTCMonth();
     return sem === "s1" ? m < 6 : m >= 6;
   });
+  // If Elsie returns activities spanning years, keep only the latest year.
+  const latest = Math.max(...matches.map((a) => perthWall(a.startDateTime).getUTCFullYear()));
+  return matches.filter((a) => perthWall(a.startDateTime).getUTCFullYear() === latest);
 }
 
 export function buildIcs(activities: Activity[], now: Date = new Date()): string {

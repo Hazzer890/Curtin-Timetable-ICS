@@ -60,6 +60,12 @@ describe("buildIcs", () => {
     expect(filterSemester([s1, s2], "all")).toEqual([s1, s2]);
   });
 
+  it("keeps only the latest year when a semester spans multiple years", () => {
+    const old = act("2026-03-02T10:00:00+08:00", "2026-03-02T12:00:00+08:00");
+    const next = act("2027-03-01T10:00:00+08:00", "2027-03-01T12:00:00+08:00");
+    expect(filterSemester([old, next], "s1")).toEqual([next]);
+  });
+
   it("is a valid calendar shell with Perth VTIMEZONE and CRLF endings", () => {
     const ics = buildIcs([], NOW);
     expect(ics.startsWith("BEGIN:VCALENDAR\r\n")).toBe(true);
