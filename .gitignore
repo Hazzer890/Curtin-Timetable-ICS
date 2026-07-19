@@ -1,2 +1,4 @@
 node_modules/
 .wrangler/
+.claude/
+.playwright-mcp/
