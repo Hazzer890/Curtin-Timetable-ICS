@@ -50,16 +50,15 @@ const PAGE = `<!doctype html>
 </style>
 <main>
   <div class="blocks" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-  <h1>Your timetable, in your calendar</h1>
-  <p class="lede">Download your Curtin classes as a calendar file — each class
-  becomes a recurring event.</p>
+  <h1>Download your Curtin classes as a calendar file</h1>
+  <p class="lede">Data is taken from Elsie.</p>
   {{error}}
   <form method="post" action="/generate">
     <label>Curtin ID<input name="curtinId" required autocomplete="username"></label>
     <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
     <label>Semester
       <select name="semester">
-        <option value="all">All classes</option>
+        <option value="all">Whole year (Feb – Nov)</option>
         <option value="s1">Semester 1 (Feb – Jun)</option>
         <option value="s2">Semester 2 (Jul – Nov)</option>
       </select>
