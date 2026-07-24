@@ -1,7 +1,7 @@
+import CLIENT from "./client.bundle.txt";
 import { buildIcs, filterSemester, type Activity, type Semester } from "./ics";
 
 const ELSIE = "https://elsie.curtin.edu.au/api";
-const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
 const PAGE = `<!doctype html>
 <html lang="en">
@@ -34,6 +34,18 @@ const PAGE = `<!doctype html>
   h1{font-family:Georgia,'Times New Roman',serif;font-size:1.75rem;font-weight:600;margin:0 0 .5rem;letter-spacing:-.01em}
   .lede{color:var(--muted);margin:0 0 1.5rem}
   form{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.5rem}
+  details{color:var(--muted);font-size:.85rem;margin-top:1rem}
+  summary{cursor:pointer}
+  details p{margin:.75rem 0 0}
+  .bm{
+    display:inline-block;font-weight:600;text-decoration:none;color:var(--ink);
+    margin-top:.75rem;padding:.45rem .8rem;border:1px dashed var(--gold);border-radius:6px;background:var(--card);
+  }
+  pre{
+    max-height:7rem;overflow:auto;margin:.5rem 0;padding:.6rem;font-size:.7rem;
+    background:var(--card);border:1px solid var(--line);border-radius:6px;white-space:pre-wrap;word-break:break-all;
+  }
+  #copy{width:auto;padding:.35rem .75rem;font-size:.8rem;margin:0}
   label{display:block;font-size:.85rem;font-weight:600;margin-bottom:1rem}
   input,select{
     width:100%;font:inherit;color:inherit;margin-top:.3rem;padding:.55rem .65rem;
@@ -67,20 +79,38 @@ const PAGE = `<!doctype html>
   </form>
   <p class="note">Your login goes to Elsie once to fetch your timetable.
   Nothing is stored or logged.</p>
+  <details>
+    <summary>Run locally, no credential upload</summary>
+    <p>This bookmarklet runs on Elsie's own page, using the login you already have there.
+    Nothing reaches this site.</p>
+    <a class="bm" href="{{bookmarklet}}">Curtin&nbsp;→&nbsp;.ics</a>
+    <p>Drag it to your bookmarks bar, open
+    <a href="https://elsie.curtin.edu.au">elsie.curtin.edu.au</a>, then click it.
+    Most phone browsers can't run bookmarklets, so use the form above on mobile.</p>
+    <p>No bookmarks bar? Copy this, then paste it into the console (F12) on Elsie.</p>
+    <pre id="snip">{{snippet}}</pre>
+    <button type="button" id="copy">Copy</button>
+  </details>
   <footer>Not affiliated with Curtin University.</footer>
 </main>
+<script>
+  copy.onclick = () => navigator.clipboard.writeText(snip.textContent).then(() => copy.textContent = "Copied");
+</script>
 </html>`;
 
+function esc(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 function page(error = "", status = 200): Response {
-  const body = PAGE.replace("{{error}}", error ? `<p class="error">${error}</p>` : "");
+  const body = PAGE.replace("{{error}}", error ? `<p class="error">${esc(error)}</p>` : "")
+    // encodeURIComponent already escapes <, >, " and &, so the href is attribute-safe.
+    .replace("{{bookmarklet}}", `javascript:${encodeURIComponent(CLIENT)}`)
+    .replace("{{snippet}}", esc(CLIENT));
   return new Response(body, { status, headers: { "Content-Type": "text/html;charset=utf-8" } });
 }
 
 const badGateway = () => new Response("Elsie didn't respond as expected.", { status: 502 });
-
-function elsieHeaders(): Record<string, string> {
-  return { "User-Agent": UA, "X-Correlation-ID": crypto.randomUUID() };
-}
 
 async function generate(req: Request): Promise<Response> {
   const form = await req.formData();
@@ -93,7 +123,7 @@ async function generate(req: Request): Promise<Response> {
   try {
     const res = await fetch(`${ELSIE}/sessions`, {
       method: "POST",
-      headers: { ...elsieHeaders(), "Content-Type": "application/json;charset=UTF-8" },
+      headers: { "Content-Type": "application/json;charset=UTF-8" },
       body: JSON.stringify({ curtinId, password }),
     });
     auth = await res.json();
@@ -106,7 +136,7 @@ async function generate(req: Request): Promise<Response> {
   let activities: Activity[];
   try {
     const res = await fetch(`${ELSIE}/students/${encodeURIComponent(curtinId)}/study-activities`, {
-      headers: { ...elsieHeaders(), Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     const json = (await res.json()) as { data?: Activity[] };
     if (!Array.isArray(json.data)) return badGateway();
