@@ -24,7 +24,7 @@ const PAGE = `<!doctype html>
     margin:0; min-height:100vh; display:grid; place-items:center;
     padding:2rem 1rem; line-height:1.55;
   }
-  main{width:100%;max-width:26rem}
+  main{width:100%;max-width:24rem}
   .blocks{display:flex;gap:.375rem;margin-bottom:1.25rem}
   .blocks span{height:.5rem;border-radius:2px}
   .blocks span:nth-child(1){width:3.5rem;background:var(--gold)}
@@ -33,22 +33,19 @@ const PAGE = `<!doctype html>
   .blocks span:nth-child(4){width:1.25rem;background:var(--b2)}
   h1{font-family:Georgia,'Times New Roman',serif;font-size:1.75rem;font-weight:600;margin:0 0 .5rem;letter-spacing:-.01em}
   .lede{color:var(--muted);margin:0 0 1.5rem}
-  form,section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.5rem}
-  h2{font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;margin:0 0 .5rem}
-  section p{margin:0 0 1rem;font-size:.9rem}
+  form{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.5rem}
+  details{color:var(--muted);font-size:.85rem;margin-top:1rem}
+  summary{cursor:pointer}
+  details p{margin:.75rem 0 0}
   .bm{
     display:inline-block;font-weight:600;text-decoration:none;color:var(--ink);
-    padding:.5rem .9rem;border:1px dashed var(--gold);border-radius:6px;background:var(--paper);
+    margin-top:.75rem;padding:.45rem .8rem;border:1px dashed var(--gold);border-radius:6px;background:var(--card);
   }
-  .step{color:var(--muted);font-size:.85rem;margin:.75rem 0 0}
-  details{margin-top:1rem;font-size:.85rem}
-  summary{cursor:pointer;color:var(--muted)}
   pre{
-    max-height:8rem;overflow:auto;margin:.75rem 0 .5rem;padding:.6rem;font-size:.7rem;
-    background:var(--paper);border:1px solid var(--line);border-radius:6px;white-space:pre-wrap;word-break:break-all;
+    max-height:7rem;overflow:auto;margin:.5rem 0;padding:.6rem;font-size:.7rem;
+    background:var(--card);border:1px solid var(--line);border-radius:6px;white-space:pre-wrap;word-break:break-all;
   }
-  #copy{width:auto;padding:.4rem .8rem;font-size:.85rem}
-  .divider{color:var(--muted);font-size:.85rem;text-align:center;margin:1.5rem 0 1rem}
+  #copy{width:auto;padding:.35rem .75rem;font-size:.8rem;margin:0}
   label{display:block;font-size:.85rem;font-weight:600;margin-bottom:1rem}
   input,select{
     width:100%;font:inherit;color:inherit;margin-top:.3rem;padding:.55rem .65rem;
@@ -68,21 +65,6 @@ const PAGE = `<!doctype html>
   <h1>Download your Curtin classes as a calendar file</h1>
   <p class="lede">Data is taken from Elsie.</p>
   {{error}}
-  <section>
-    <h2>Without a password</h2>
-    <p>This runs on Elsie's own page, using the login you already have there.
-    Nothing is sent to this site — not your password, not your timetable.</p>
-    <a class="bm" href="{{bookmarklet}}">Curtin&nbsp;→&nbsp;.ics</a>
-    <p class="step">Drag that to your bookmarks bar. Then open
-    <a href="https://elsie.curtin.edu.au">elsie.curtin.edu.au</a>, log in, and click it.</p>
-    <details>
-      <summary>Bookmarks bar hidden? Paste this into the console instead</summary>
-      <p class="step">On Elsie, press F12 → Console, paste, press Enter.</p>
-      <pre id="snip">{{snippet}}</pre>
-      <button type="button" id="copy">Copy</button>
-    </details>
-  </section>
-  <p class="divider">or, on a phone, hand over your login</p>
   <form method="post" action="/generate">
     <label>Curtin ID<input name="curtinId" required autocomplete="username"></label>
     <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
@@ -95,9 +77,20 @@ const PAGE = `<!doctype html>
     </label>
     <button>Download timetable.ics</button>
   </form>
-  <p class="note">Bookmarklets don't work in most mobile browsers, so the form is here as a fallback.
-  Your login passes through this site once to reach Elsie. Nothing is stored or logged —
-  but you have to take my word for that, which is why the option above exists.</p>
+  <p class="note">Your login goes to Elsie once to fetch your timetable.
+  Nothing is stored or logged.</p>
+  <details>
+    <summary>Skip the password</summary>
+    <p>This bookmarklet runs on Elsie's own page, using the login you already have there.
+    Nothing reaches this site.</p>
+    <a class="bm" href="{{bookmarklet}}">Curtin&nbsp;→&nbsp;.ics</a>
+    <p>Drag it to your bookmarks bar, open
+    <a href="https://elsie.curtin.edu.au">elsie.curtin.edu.au</a>, then click it.
+    Most phone browsers can't run bookmarklets, so use the form above on mobile.</p>
+    <p>No bookmarks bar? Copy this, then paste it into the console (F12) on Elsie.</p>
+    <pre id="snip">{{snippet}}</pre>
+    <button type="button" id="copy">Copy</button>
+  </details>
   <footer>Not affiliated with Curtin University.</footer>
 </main>
 <script>
