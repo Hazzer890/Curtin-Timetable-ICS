@@ -2,5 +2,6 @@
   "name": "timetable",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-01",
-  "routes": [{ "pattern": "timetable.harrys.monster", "custom_domain": true }]
+  "routes": [{ "pattern": "timetable.harrys.monster", "custom_domain": true }],
+  "rules": [{ "type": "Text", "globs": ["**/*.txt"] }]
 }

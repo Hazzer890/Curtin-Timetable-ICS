@@ -2,12 +2,16 @@
   "name": "timetable-site",
   "private": true,
   "scripts": {
+    "bundle": "esbuild src/client.ts --bundle --minify --format=iife --outfile=src/client.bundle.txt",
+    "predev": "npm run bundle",
     "dev": "wrangler dev",
+    "predeploy": "npm run bundle",
     "deploy": "wrangler deploy",
     "test": "vitest run"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.0.0",
+    "esbuild": "^0.28.1",
     "typescript": "^5.5.0",
     "vitest": "^3.0.0",
     "wrangler": "^4.0.0"

@@ -3,3 +3,4 @@ node_modules/
 .claude/
 .playwright-mcp/
 docs/superpowers/
+src/client.bundle.txt
