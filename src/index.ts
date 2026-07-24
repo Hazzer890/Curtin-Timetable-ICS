@@ -80,7 +80,7 @@ const PAGE = `<!doctype html>
   <p class="note">Your login goes to Elsie once to fetch your timetable.
   Nothing is stored or logged.</p>
   <details>
-    <summary>Skip the password</summary>
+    <summary>Run locally, no credential upload</summary>
     <p>This bookmarklet runs on Elsie's own page, using the login you already have there.
     Nothing reaches this site.</p>
     <a class="bm" href="{{bookmarklet}}">Curtin&nbsp;→&nbsp;.ics</a>
